@@ -8,9 +8,9 @@ import zipfile
 st.title('Batch RGB Random Noise Image Generator')
 
 # ユーザーが画像のサイズと枚数を指定できるように入力を受け取る
-width = st.number_input('Enter width', min_value=1, value=256)
-height = st.number_input('Enter height', min_value=1, value=256)
-num_images = st.number_input('Enter number of images to generate', min_value=1, value=5)
+width = st.number_input('Enter width', min_value=1, value=768)
+height = st.number_input('Enter height', min_value=1, value=768)
+num_images = st.number_input('Enter number of images to generate', min_value=1, value=24)
 
 # 'Generate' ボタンを追加
 if st.button('Generate'):
