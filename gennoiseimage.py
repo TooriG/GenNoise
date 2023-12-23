@@ -12,6 +12,9 @@ width = st.number_input('Enter width', min_value=1, value=768)
 height = st.number_input('Enter height', min_value=1, value=768)
 num_images = st.number_input('Enter number of images to generate', min_value=1, value=24)
 
+# 生成された画像を格納するリスト
+generated_images = []
+
 # 'Generate' ボタンを追加
 if st.button('Generate'):
     # 生成された画像を保存するためのバイト配列
@@ -23,6 +26,7 @@ if st.button('Generate'):
             # ランダムノイズ画像を生成
             noise = np.random.randint(0, 256, (height, width, 3), dtype=np.uint8)
             image = Image.fromarray(noise)
+            generated_images.append(image)  # 画像をリストに追加
             img_byte_arr = io.BytesIO()
             image.save(img_byte_arr, format='PNG')
             img_byte_arr = img_byte_arr.getvalue()
@@ -37,3 +41,7 @@ if st.button('Generate'):
         file_name='noise_images.zip',
         mime='application/zip'
     )
+
+    # 生成された画像を表示
+    for idx, img in enumerate(generated_images, 1):
+        st.image(img, caption=f'Image {idx}', use_column_width=True)
