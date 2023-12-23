@@ -1,53 +1,17 @@
 import streamlit as st
-from PIL import Image, PngImagePlugin
-import io
-import zipfile
+import numpy as np
+from PIL import Image
 
-# 画像をリサイズする関数
-def resize_image(image_file):
-    with Image.open(image_file) as original_image:
-        original_format = original_image.format
+# Streamlitアプリのタイトル
+st.title('RGBランダムノイズ画像生成器')
 
-        # PNG metadataのコピー（PngInfoオブジェクトを使用）
-        metadata = PngImagePlugin.PngInfo()
-        if original_format == 'PNG':
-            for k, v in original_image.info.items():
-                metadata.add_text(k, v)
+# ユーザーがサイズを指定できるように入力を受け取る
+width = st.number_input('幅を入力してください', min_value=1, value=256)
+height = st.number_input('高さを入力してください', min_value=1, value=256)
 
-        size = (original_image.width * 2, original_image.height * 2)
-        resized_image = original_image.resize(size, Image.Resampling.LANCZOS)
+# ランダムノイズ画像を生成
+noise = np.random.randint(0, 256, (height, width, 3), dtype=np.uint8)
+image = Image.fromarray(noise)
 
-        # メモリ内のバッファに画像を保存
-        img_buffer = io.BytesIO()
-        if original_format == 'PNG':
-            # PNG metadataを保持しながら保存
-            resized_image.save(img_buffer, format='PNG', pnginfo=metadata)
-        else:
-            # 他のフォーマットの場合は元のフォーマットを使用して保存
-            resized_image.save(img_buffer, format=original_format)
-        img_buffer.seek(0)
-
-    return img_buffer
-
-# Streamlit UI
-st.title('画像リサイズアプリ')
-
-uploaded_files = st.file_uploader("画像をアップロードしてください", type=['jpg', 'png'], accept_multiple_files=True)
-
-if uploaded_files:
-    # Zipファイルの作成
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for uploaded_file in uploaded_files:
-            img_buffer = resize_image(uploaded_file)
-            # Zipファイルに追加
-            zip_file.writestr(uploaded_file.name, img_buffer.read())
-
-    # ユーザーにダウンロード用のリンクを提供
-    zip_buffer.seek(0)
-    st.download_button(
-        label="画像をダウンロード",
-        data=zip_buffer,
-        file_name="resized_images.zip",
-        mime="application/zip"
-    )
+# 画像を表示
+st.image(image, caption='ランダムRGBノイズ画像', use_column_width=True)
