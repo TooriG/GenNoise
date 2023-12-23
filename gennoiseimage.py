@@ -6,8 +6,8 @@ from PIL import Image
 st.title('RGB Random Noise Image Generator')
 
 # ユーザーがサイズを指定できるように入力を受け取る
-width = st.number_input('Enter width', min_value=1, value=256)
-height = st.number_input('Enter height', min_value=1, value=256)
+width = st.number_input('Enter width', min_value=1, value=768)
+height = st.number_input('Enter height', min_value=1, value=768)
 
 # 'Generate' ボタンを追加
 if st.button('Generate'):
